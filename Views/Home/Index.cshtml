@@ -1,0 +1,16 @@
+﻿@* Views/Home/Index.cshtml *@
+
+@{
+    Layout = "~/Views/Shared/_LayoutSansMenu.cshtml";
+    ViewData["Title"] = "Bienvenue";
+}
+
+
+<div class="text-center mt-5">
+    <h1 class="display-5">Bienvenue sur GestionÉtudiants 🎓</h1>
+    <p class="lead">Veuillez vous connecter pour accéder à votre espace.</p>
+
+    <a class="btn btn-primary btn-lg mt-4" asp-area="Identity" asp-page="/Account/Login">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Connexion
+    </a>
+</div>

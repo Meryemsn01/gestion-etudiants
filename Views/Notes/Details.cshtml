@@ -1,0 +1,23 @@
+﻿@model GestionEtudiants.Models.Note
+
+<h2>Détails de la Note</h2>
+
+<div>
+    <h4>Note</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Étudiant</dt>
+        <dd class="col-sm-10">@Model.Etudiant.Nom @Model.Etudiant.Prenom</dd>
+
+        <dt class="col-sm-2">Matière</dt>
+        <dd class="col-sm-10">@Model.Matiere.Nom</dd>
+
+        <dt class="col-sm-2">Valeur</dt>
+        <dd class="col-sm-10">@Model.Valeur</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifier</a>
+    <a asp-action="Index" asp-route-classeId="@ViewBag.ClasseId" class="btn btn-secondary">Retour à la liste</a>
+
+</div>

@@ -1,0 +1,72 @@
+﻿
+@model IEnumerable<GestionEtudiants.Models.Note>
+
+@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Mon Relevé de Notes";
+}
+
+<!-- ✅ TITRE -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-primary">
+        <i class="bi bi-file-earmark-text-fill me-2"></i>Mon Relevé de Notes
+    </h3>
+    <a asp-controller="EspaceEtudiant" asp-action="TelechargerReleve" class="btn btn-outline-success mb-3">
+        <i class="bi bi-download me-1"></i> Télécharger en PDF
+    </a>
+
+</div>
+
+<!-- ✅ TABLEAU DES NOTES -->
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Vous n'avez pas encore de notes enregistrées.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Matière</th>
+                        <th>Coefficient</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var note in Model)
+                    {
+                        <tr>
+                            <td>@note.Matiere?.Nom</td>
+                            <td>@note.Matiere?.Coefficient</td>
+                            <td>@note.Valeur</td>
+                        </tr>
+                    }
+                <tfoot class="table-light">
+                    <tr>
+                        <th colspan="2" class="text-end">Moyenne générale :</th>
+                        <th>
+                                @{
+                                    var sommeCoeffs = Model.Sum(n => n.Matiere?.Coefficient ?? 0);
+                                    var moyenne = sommeCoeffs > 0
+                                    ? Model.Sum(n => (n.Valeur * (n.Matiere?.Coefficient ?? 1))) / sommeCoeffs
+                                    : 0;
+                                }
+                                @moyenne.ToString("0.00")
+                        </th>
+                    </tr>
+                </tfoot>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a asp-controller="EspaceEtudiant" asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Retour à l'accueil étudiant
+        </a>
+    </div>
+
+}

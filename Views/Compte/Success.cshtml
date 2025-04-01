@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Compte créé avec succès";
+}
+
+<div class="text-center mt-5">
+    <h2 class="text-success"><i class="bi bi-check-circle-fill me-2"></i>Compte créé avec succès !</h2>
+    <p class="mt-3">L’utilisateur a été ajouté avec succès à la plateforme.</p>
+
+    <div class="mt-4">
+        <a asp-controller="Compte" asp-action="Create" class="btn btn-outline-success me-2">
+            <i class="bi bi-person-plus-fill"></i> Ajouter un autre compte
+        </a>
+        <a asp-controller="Compte" asp-action="List" class="btn btn-outline-primary">
+            <i class="bi bi-list-ul"></i> Voir les comptes existants
+        </a>
+    </div>
+</div>

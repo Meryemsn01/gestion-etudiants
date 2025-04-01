@@ -1,0 +1,74 @@
+﻿@model GestionEtudiants.Models.Classe
+
+<style>
+    .table-custom {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table-custom th {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .table-custom tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+    .btn-rounded {
+        border-radius: 8px;
+    }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="card-custom">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-secondary">Classe : @Model.Nom</h5>
+
+        <!-- ✅ Bouton Ajouter ici -->
+        <a asp-action="Create" asp-route-classeId="@Model.Id" class="btn btn-success btn-sm btn-rounded">
+            <i class="bi bi-plus-circle-fill"></i> Ajouter une matière
+        </a>
+    </div>
+
+    @if (Model.Matieres.Any())
+    {
+        <table class="table table-custom table-hover">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Coefficient</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var matiere in Model.Matieres)
+                {
+                    <tr>
+                        <td>@matiere.Nom</td>
+                        <td>@matiere.Coefficient</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@matiere.Id" class="btn btn-warning btn-sm btn-rounded">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@matiere.Id" class="btn btn-danger btn-sm btn-rounded">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-secondary rounded-3">
+            Aucune matière enregistrée dans cette classe.
+        </div>
+    }
+</div>

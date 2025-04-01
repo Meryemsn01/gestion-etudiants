@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Liste des Comptes";
+}
+
+<h2 class="mb-4 d-flex align-items-center">
+    <i class="bi bi-people-fill me-2"></i>Comptes existants
+</h2>
+
+<!-- 🔍 Barre de recherche -->
+<form method="get" asp-action="List" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="searchEmail" value="@ViewBag.Search" class="form-control" placeholder="Rechercher par email..." />
+        <button type="submit" class="btn btn-outline-primary">
+            <i class="bi bi-search me-1"></i> Rechercher
+        </button>
+    </div>
+</form>
+
+<!-- 📋 Tableau des comptes -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-striped mb-0">
+            <thead class="table-primary">
+                <tr>
+                    <th>Email</th>
+                    <th>Rôle(s)</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in ViewBag.Users)
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>@string.Join(", ", user.Roles)</td>
+                        <td class="text-end">
+                            <form asp-action="Delete" method="post" asp-route-email="@user.Email" onsubmit="return confirm('Voulez-vous vraiment supprimer ce compte ?');" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash-fill me-1"></i> Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 🔙 Bouton retour -->
+<a asp-action="Create" class="btn btn-secondary mt-4">
+    <i class="bi bi-arrow-left-circle me-1"></i>Retour à la création
+</a>

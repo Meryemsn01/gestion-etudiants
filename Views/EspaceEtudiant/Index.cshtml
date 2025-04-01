@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutEtudiant.cshtml";
+    ViewData["Title"] = "Espace Étudiant";
+}
+
+<style>
+    .welcome-box {
+        background-color: #ffffff;
+        border-left: 6px solid #2563eb;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 40px;
+    }
+
+        .welcome-box h2 {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+    .card-custom {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease;
+        height: 100%;
+    }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-custom .card-body {
+            padding: 30px;
+        }
+
+        .card-custom h5 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+    .btn-rounded {
+        border-radius: 30px;
+        padding: 8px 20px;
+        font-weight: 500;
+    }
+
+</style>
+
+<div class="container mt-5">
+    <!-- ✅ Zone de bienvenue -->
+    <div class="welcome-box">
+        <h2><i class="bi bi-person-circle me-2 text-primary"></i>Bienvenue dans votre espace étudiant</h2>
+        <p class="mb-0 text-muted">Accédez facilement à vos notes et mettez à jour votre profil.</p>
+    </div>
+
+    <!-- ✅ Cartes d'accès rapide -->
+    <div class="row g-4">
+        <!-- 📄 Relevé de notes -->
+        <div class="col-md-6">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="text-primary"><i class="bi bi-file-earmark-text me-2"></i>Relevé de notes</h5>
+                    <p class="card-text text-muted">Consultez et téléchargez votre relevé de notes officiel.</p>
+                    <a asp-action="Releve" class="btn btn-outline-primary btn-rounded">
+                        <i class="bi bi-eye me-1"></i> Voir le relevé
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔐 Profil / mot de passe -->
+        <div class="col-md-6">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="text-success"><i class="bi bi-shield-lock me-2"></i>Changer le mot de passe</h5>
+                    <p class="card-text text-muted">Mettez à jour vos informations de sécurité à tout moment.</p>
+                    <a asp-action="Profil" class="btn btn-outline-success btn-rounded">
+                        <i class="bi bi-person-gear me-1"></i> Accéder au profil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

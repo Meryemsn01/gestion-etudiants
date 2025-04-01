@@ -1,0 +1,318 @@
+﻿@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Tableau de Bord";
+    var matieresParClasse = (IEnumerable<object>)ViewBag.MatieresParClasse;
+    var classement = ViewBag.Classement;
+}
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- ✅ STYLE -->
+<!-- ✅ STYLE PRO : Palette Vert - Bleu - Rouge -->
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #ffffff;
+        color: #1f2937;
+    }
+
+    h2 {
+        font-weight: 600;
+        font-size: 28px;
+    }
+
+    /* === Cartes === */
+    .card {
+        border-radius: 16px;
+        border: none;
+        background-color: #ffffff;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+    .card-header {
+        font-weight: 600;
+        font-size: 18px;
+        background-color: #2563eb; /* 🔵 Bleu Pro */
+        color: white;
+        border-bottom: none;
+    }
+
+    /* === Cartes Stats === */
+    .stat-card h4 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card h1 {
+        font-size: 42px;
+        font-weight: bold;
+    }
+
+    .card-stat-green {
+        background-color: #10b981;
+        color: white;
+    }
+
+    .card-stat-red {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .card-stat-blue {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    /* === Tableau === */
+    .table thead {
+        background-color: #2563eb; /* 🔵 Bleu */
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* === Badge Vert Lumineux */
+    .badge {
+        font-size: 1rem;
+        padding: 6px 12px;
+        background-color: #10b981;
+        border-radius: 20px;
+        color: white;
+        font-weight: 500;
+    }
+
+    /* Icônes colorées */
+    .icon-green {
+        color: #10b981;
+        margin-right: 8px;
+    }
+
+    .icon-blue {
+        color: #2563eb;
+        margin-right: 8px;
+    }
+
+    .icon-red {
+        color: #dc3545;
+        margin-right: 8px;
+    }
+
+    #moyennesPieChart {
+        max-width: 220px;
+        max-height: 220px;
+    }
+
+</style>
+
+
+
+<!-- ✅ TITRE + BOUTON alignés -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="bi bi-bar-chart-fill me-2"></i>Tableau de Bord
+    </h2>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="Compte" asp-action="Create" class="btn btn-success rounded-pill">
+            <i class="bi bi-person-plus-fill me-1"></i> Créer un compte
+        </a>
+    }
+</div>
+
+
+<!-- ✅ CARTES STATISTIQUES : Étudiants / Matières / Classes -->
+<div class="row mb-4">
+    <!-- 👥 Étudiants -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow stat-card card-stat-blue">
+            <div class="card-body">
+                <h4><i class="bi bi-people-fill me-2"></i>Étudiants</h4>
+                <h1>@ViewBag.NombreEtudiants</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📘 Matières -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow stat-card card-stat-green">
+            <div class="card-body">
+                <h4><i class="bi bi-journal-text me-2"></i>Matières</h4>
+                <h1>@ViewBag.NombreMatieres</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🏫 Classes -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow stat-card card-stat-red">
+            <div class="card-body">
+                <h4><i class="bi bi-building me-2"></i>Classes</h4>
+                <h1>@ViewBag.NombreClasses</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ✅ GRAPHIQUE -->
+<!-- ✅ GRAPHIQUES : Barres + Diagramme Circulaire côte à côte -->
+<div class="row mb-5">
+    <!-- 🔵 Graphe des matières -->
+    <div class="col-md-8 mb-3">
+        <div class="card shadow h-100">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-pie-chart-fill me-2"></i>Répartition des Matières par Classe
+            </div>
+            <div class="card-body">
+                <canvas id="matieresChart" height="140"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 Diagramme circulaire -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow h-100">
+            <div class="card-header bg-danger text-white">
+                🎯 Répartition des Étudiants selon leur Moyenne
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="moyennesPieChart" width="200" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ✅ CLASSEMENT -->
+@if (classement != null && ((IEnumerable<dynamic>)classement).Any())
+{
+    <div class="card shadow mb-5">
+        <div class="card-header">
+            🏆 Classement des Meilleurs Étudiants
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Classe</th>
+                        <th>Moyenne</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var etu in classement)
+                    {
+                        <tr>
+                            <td>@etu.NomComplet</td>
+                            <td>@etu.Classe</td>
+                            <td><span class="badge">@etu.Moyenne</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+
+
+<!-- ✅ CHART JS -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const data = @Html.Raw(JsonSerializer.Serialize(matieresParClasse));
+
+        const labels = data.map(c => c.ClasseNom);
+        const nbMatieres = data.map(c => c.NbMatieres);
+
+        const ctx = document.getElementById('matieresChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre de matières',
+                    data: nbMatieres,
+                    backgroundColor: 'rgba(16, 185, 129, 0.6)', // 🟢 vert pro
+                    borderColor: '#10b981',
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        const moyennesStats = @Html.Raw(JsonSerializer.Serialize(ViewBag.MoyennesStats));
+
+        const ctxPie = document.getElementById('moyennesPieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Moyenne < 10', 'Entre 10 et 12', 'Moyenne > 12'],
+                datasets: [{
+                    data: [
+                        moyennesStats.Inferieure10,
+                        moyennesStats.Entre10et12,
+                        moyennesStats.Superieure12
+                    ],
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.7)',    // Rouge
+                        'rgba(255, 193, 7, 0.7)',     // Orange
+                        'rgba(16, 185, 129, 0.7)'     // Vert
+                    ],
+                    borderColor: [
+                        '#DC3545', '#FFC107', '#10b981'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                let current = context.raw;
+                                let percentage = ((current / total) * 100).toFixed(1);
+                                return `${context.label} : ${current} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+}
+
