@@ -18,7 +18,7 @@ Une application web de gestion des étudiants développée avec **ASP.NET Core M
 
 ## 🎯 Fonctionnalités principales
 
-- Gestion des étudiants, matières et notes
+- Gestion des étudiants,classes, matières et notes
 - Authentification avec rôles (Admin / Étudiant)
 - Génération de relevés de notes en PDF
 - Dashboard avec statistiques
