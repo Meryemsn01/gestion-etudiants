@@ -28,4 +28,4 @@ Une application web de gestion des étudiants développée avec **ASP.NET Core M
 
 1. Cloner le projet :
    ```bash
-   git clone https://github.com/TON_UTILISATEUR/gestion-etudiants.git
+   git clone https://github.com/Meryemsn01/gestion-etudiants.git
